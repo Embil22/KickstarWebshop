@@ -49,9 +49,6 @@ switch($sort) {
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Kategóriák lekérése (példa - ha lenne kategória tábla)
-$categories = ['Férfi', 'Női', 'Gyerek', 'Sport', 'Casual'];
 ?>
 
 <!DOCTYPE html>
@@ -498,54 +495,6 @@ $categories = ['Férfi', 'Női', 'Gyerek', 'Sport', 'Casual'];
             <input type="text" name="search" placeholder="Keresés termékek között..." value="<?php echo htmlspecialchars($search); ?>">
             <button type="submit">Keresés</button>
         </form>
-
-        <!-- Filter szekció -->
-        <div class="filters-section">
-            <form action="" method="GET" id="filter-form">
-                <?php if(!empty($search)): ?>
-                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                <?php endif; ?>
-                
-                <div class="filters-grid">
-                    <div class="filter-group">
-                        <label>Kategória</label>
-                        <select name="category">
-                            <option value="">Összes kategória</option>
-                            <?php foreach($categories as $cat): ?>
-                                <option value="<?php echo $cat; ?>" <?php echo $category == $cat ? 'selected' : ''; ?>>
-                                    <?php echo $cat; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label>Rendezés</label>
-                        <select name="sort">
-                            <option value="newest" <?php echo $sort == 'newest' ? 'selected' : ''; ?>>Legújabb</option>
-                            <option value="price_asc" <?php echo $sort == 'price_asc' ? 'selected' : ''; ?>>Ár szerint növekvő</option>
-                            <option value="price_desc" <?php echo $sort == 'price_desc' ? 'selected' : ''; ?>>Ár szerint csökkenő</option>
-                            <option value="name_asc" <?php echo $sort == 'name_asc' ? 'selected' : ''; ?>>Név szerint A-Z</option>
-                            <option value="name_desc" <?php echo $sort == 'name_desc' ? 'selected' : ''; ?>>Név szerint Z-A</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label>Ár tartomány</label>
-                        <div class="price-range">
-                            <input type="number" name="min_price" placeholder="Min" value="<?php echo $minPrice ?: ''; ?>" min="0" step="1000">
-                            <span>-</span>
-                            <input type="number" name="max_price" placeholder="Max" value="<?php echo $maxPrice < 100000 ? $maxPrice : ''; ?>" min="0" step="1000">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="filter-actions">
-                    <a href="products.php" class="reset-filters">Szűrők törlése</a>
-                    <button type="submit" class="apply-filters">Szűrés</button>
-                </div>
-            </form>
-        </div>
 
         <!-- Termékek grid -->
         <div class="products-grid">
