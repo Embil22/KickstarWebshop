@@ -1,0 +1,628 @@
+/* Admin alapstílusok */
+:root {
+    --admin-primary: #3498db;
+    --admin-secondary: #2c3e50;
+    --admin-success: #27ae60;
+    --admin-danger: #e74c3c;
+    --admin-warning: #f39c12;
+    --admin-light: #ecf0f1;
+    --admin-dark: #2c3e50;
+    --admin-border-radius: 6px;
+    --admin-box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --admin-transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f6fa;
+    color: var(--admin-dark);
+}
+
+/* Admin container */
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Admin header */
+.admin-container header {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: var(--admin-border-radius);
+    box-shadow: var(--admin-box-shadow);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-container header h1 {
+    color: var(--admin-dark);
+    font-size: 1.8rem;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.admin-container header h1::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 70%;
+    background: var(--admin-primary);
+    border-radius: 2px;
+}
+
+.logout-btn {
+    background-color: var(--admin-danger);
+    color: white;
+    text-decoration: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--admin-border-radius);
+    transition: var(--admin-transition);
+    font-weight: 500;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Admin bejelentkezés */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 2.5rem;
+    border-radius: var(--admin-border-radius);
+    box-shadow: var(--admin-box-shadow);
+}
+
+.login-container h2 {
+    text-align: center;
+    color: var(--admin-dark);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.login-container h2 span {
+    color: var(--admin-primary);
+}
+
+.login-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--admin-dark);
+    font-weight: 500;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--admin-border-radius);
+    font-size: 1rem;
+    transition: var(--admin-transition);
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--admin-primary);
+    color: white;
+    border: none;
+    border-radius: var(--admin-border-radius);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--admin-transition);
+    margin-top: 1rem;
+}
+
+.login-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    background-color: #fde8e8;
+    color: var(--admin-danger);
+    padding: 0.8rem;
+    border-radius: var(--admin-border-radius);
+    margin-bottom: 1rem;
+    text-align: center;
+    border-left: 4px solid var(--admin-danger);
+}
+
+/* Rendelések tábla */
+.orders-table {
+    width: 100%;
+    background: white;
+    border-radius: var(--admin-border-radius);
+    box-shadow: var(--admin-box-shadow);
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+.orders-table thead {
+    background-color: var(--admin-primary);
+    color: white;
+}
+
+.orders-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.orders-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.orders-table tbody tr {
+    transition: var(--admin-transition);
+}
+
+.orders-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Státusz select */
+.status-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--admin-border-radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--admin-transition);
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+.status-select option[value="pending"] { background-color: var(--admin-warning); }
+.status-select option[value="processing"] { background-color: var(--admin-primary); }
+.status-select option[value="shipped"] { background-color: var(--admin-success); }
+.status-select option[value="delivered"] { background-color: var(--admin-dark); color: white; }
+
+/* Részletek gomb */
+.view-details {
+    background-color: var(--admin-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--admin-border-radius);
+    cursor: pointer;
+    transition: var(--admin-transition);
+    font-size: 0.9rem;
+}
+
+.view-details:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: var(--admin-border-radius);
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--admin-transition);
+}
+
+.close:hover {
+    color: var(--admin-dark);
+}
+
+/* Rendelés részletek modalban */
+#orderDetails h2 {
+    color: var(--admin-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--admin-primary);
+}
+
+#orderDetails h3 {
+    color: var(--admin-dark);
+    margin: 1.5rem 0 1rem;
+}
+
+.order-info {
+    background: var(--admin-light);
+    padding: 1.5rem;
+    border-radius: var(--admin-border-radius);
+    margin-bottom: 2rem;
+}
+
+.order-info p {
+    margin-bottom: 0.5rem;
+}
+
+.order-info p strong {
+    display: inline-block;
+    width: 100px;
+    color: var(--admin-dark);
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.items-table th {
+    background-color: var(--admin-light);
+    padding: 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--admin-dark);
+}
+
+.items-table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.items-table tfoot td {
+    border-bottom: none;
+    padding-top: 1rem;
+}
+
+/* Dashboard statisztikák */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--admin-border-radius);
+    box-shadow: var(--admin-box-shadow);
+    text-align: center;
+    transition: var(--admin-transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+    color: var(--admin-dark);
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--admin-primary);
+}
+
+.stat-card .stat-icon {
+    font-size: 2rem;
+    color: var(--admin-primary);
+    margin-bottom: 0.5rem;
+}
+
+/* Filter szekció */
+.filters {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--admin-border-radius);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: var(--admin-dark);
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--admin-border-radius);
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--admin-border-radius);
+    font-size: 0.9rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+/* Pagináció */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: var(--admin-border-radius);
+    cursor: pointer;
+    transition: var(--admin-transition);
+}
+
+.pagination button:hover {
+    background-color: var(--admin-light);
+}
+
+.pagination button.active {
+    background-color: var(--admin-primary);
+    color: white;
+    border-color: var(--admin-primary);
+}
+
+/* Reszponzív design */
+@media (max-width: 1024px) {
+    .admin-container {
+        padding: 1rem;
+    }
+    
+    .orders-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-container header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .admin-container header h1 {
+        padding-left: 0;
+    }
+    
+    .admin-container header h1::before {
+        display: none;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 1rem;
+    }
+    
+    .order-info p strong {
+        display: block;
+        width: auto;
+        margin-bottom: 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        margin: 50px 20px;
+        padding: 1.5rem;
+    }
+    
+    .orders-table td,
+    .orders-table th {
+        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .view-details {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .status-select {
+        padding: 0.3rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Animációk */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.stat-card.new-order {
+    animation: pulse 2s infinite;
+}
+
+/* Badge-ek */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #fde8e8;
+    color: var(--admin-danger);
+}
+
+.status-badge.processing {
+    background-color: #e8f0fe;
+    color: var(--admin-primary);
+}
+
+.status-badge.shipped {
+    background-color: #e8f8f5;
+    color: var(--admin-success);
+}
+
+.status-badge.delivered {
+    background-color: #f0f0f0;
+    color: var(--admin-dark);
+}
+
+/* Tooltip */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background-color: var(--admin-dark);
+    color: white;
+    border-radius: var(--admin-border-radius);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--admin-transition);
+    z-index: 10;
+}
+
+[data-tooltip]:hover:before {
+    opacity: 1;
+    visibility: visible;
+    bottom: 120%;
+}
+
+/* Loading spinner */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
