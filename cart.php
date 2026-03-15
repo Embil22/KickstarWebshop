@@ -1,4 +1,4 @@
-AJ1MDS.jpg<?php
+<?php
 session_start();
 require_once 'database.php';
 ?>
