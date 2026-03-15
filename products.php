@@ -474,9 +474,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <div class="price">
                                 <?php echo number_format($product['price'], 0, ',', ' '); ?> Ft
                                 <?php if($product['id'] % 3 == 0): ?>
-                                    <span class="original-price">
-                                        <?php echo number_format($product['price'] * 1.2, 0, ',', ' '); ?> Ft
-                                    </span>
                                 <?php endif; ?>
                             </div>
                             
