@@ -16,6 +16,10 @@ require_once 'database.php';
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 20px;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .cart-header {
@@ -35,9 +39,10 @@ require_once 'database.php';
 
         /* Kosár tartalom */
         .cart-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
         }
 
         /* Kosár tételek */
@@ -406,22 +411,44 @@ require_once 'database.php';
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .empty-cart i {
             font-size: 5rem;
             color: #ddd;
             margin-bottom: 1rem;
+            display: inline-block;
         }
 
         .empty-cart h2 {
             color: var(--dark-color);
             margin-bottom: 1rem;
+            font-size: 1.8rem;
         }
 
         .empty-cart p {
             color: #666;
             margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .empty-cart .checkout-btn {
+            display: inline-block;
+            width: auto;
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .empty-cart .checkout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
         }
 
         /* Értesítések */
@@ -517,6 +544,44 @@ require_once 'database.php';
 
             .cart-actions {
                 flex-direction: column;
+            }
+        }
+        @media (max-width: 768px) {
+            .cart-container {
+                min-height: calc(100vh - 150px);
+                padding: 1rem;
+            }
+            
+            .empty-cart {
+                padding: 2rem 1.5rem;
+                max-width: 90%;
+            }
+            
+            .empty-cart h2 {
+                font-size: 1.5rem;
+            }
+            
+            .empty-cart p {
+                font-size: 0.9rem;
+            }
+            
+            .empty-cart .checkout-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .empty-cart {
+                padding: 1.5rem 1rem;
+            }
+            
+            .empty-cart i {
+                font-size: 3.5rem;
+            }
+            
+            .empty-cart h2 {
+                font-size: 1.2rem;
             }
         }
 
