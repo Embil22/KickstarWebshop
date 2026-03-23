@@ -450,7 +450,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['place_order'])) {
         }
 
         .submit-btn:hover {
-            background: #ff5252;
+            background: black;
             transform: translateY(-2px);
         }
 
@@ -745,7 +745,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['place_order'])) {
     </main>
 
     <footer>
-        <p>&copy; 2024 Kickstar Sneaker - Minden jog fenntartva</p>
+        <p>&copy; 2026 Kickstar Sneaker - Minden jog fenntartva</p>
     </footer>
 
     <script>
