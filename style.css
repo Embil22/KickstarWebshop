@@ -369,7 +369,6 @@ nav ul li a:hover::after {
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  text-align: right;
 }
 
 .cart-summary h3 {
