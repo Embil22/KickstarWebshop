@@ -225,8 +225,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             gap: 2rem;
             margin-top: 2rem;
         }
-        
-        /* Termék kártya bővítések */
 /* Termék kártya */
 .product-card {
     position: relative;
@@ -310,12 +308,12 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     cursor: pointer;
     font-weight: bold;
     transition: var(--transition);
-    margin-top: auto; /* Ez tolja mindig alulra */
+    margin-top: auto;
     flex-shrink: 0;
 }
 
 .add-to-cart:hover {
-    background-color: #ff5252;
+    background-color: black;
 }
 
 .add-to-cart:disabled {
@@ -431,7 +429,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="logo">Kickstar</div>
             <ul>
                 <li><a href="index.php">Főoldal</a></li>
-                <li><a href="products.php" class="active">Termékek</a></li>
+                <li><a href="products.php">Termékek</a></li>
                 <li><a href="cart.php">Kosár <span id="cart-count">0</span></a></li>
             </ul>
         </nav>
