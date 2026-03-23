@@ -289,7 +289,7 @@ $street = trim($addressParts[2] ?? '');
                     <td>
                         <div class="product-info">
                             <?php if(!empty($item['image'])): ?>
-                                <img src="../uploads/<?php echo $item['image']; ?>" class="product-image" alt="<?php echo $item['product_name']; ?>">
+                                <img src="uploads/<?php echo $item['image']; ?>" class="product-image" alt="<?php echo $item['product_name']; ?>">
                             <?php endif; ?>
                             <div>
                                 <strong><?php echo htmlspecialchars($item['product_name']); ?></strong>
