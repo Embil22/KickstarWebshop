@@ -60,7 +60,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <style>
         /* Dashboard specifikus stílusok */
         .welcome-section {
-            background: linear-gradient(135deg, #3498db, #2c3e50);
+            background: linear-gradient(135deg, black, var(--primary-color));
             color: white;
             padding: 2rem;
             border-radius: 10px;
