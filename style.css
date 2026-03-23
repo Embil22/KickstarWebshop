@@ -551,7 +551,7 @@ nav ul li a:hover::after {
 
 /* Lábléc */
 footer {
-  background-color: var(--dark-color);
+  background-color: var(--primary-color);
   color: white;
   text-align: center;
   padding: 2rem;
