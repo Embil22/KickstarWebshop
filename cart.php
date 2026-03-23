@@ -309,7 +309,7 @@ require_once 'database.php';
         }
 
         .apply-coupon {
-            background: var(--secondary-color);
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 0.8rem 1.5rem;
@@ -319,23 +319,69 @@ require_once 'database.php';
         }
 
         .apply-coupon:hover {
-            background: #45b7aa;
+            background: green;
         }
 
         .coupon-applied {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            padding: 1rem;
-            border-radius: 4px;
+            padding: 1.2rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coupon-applied::before {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .coupon-applied .coupon-text {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-left: 2.5rem;
+        }
+
+        .coupon-applied .coupon-code {
+            background: rgba(255,255,255,0.8);
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            margin: 0 auto;
         }
 
         .remove-coupon {
-            color: var(--danger-color);
+            color: #dc3545;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(220,53,69,0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .remove-coupon:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(220,53,69,0.3);
         }
 
         /* Checkout gomb */
@@ -674,6 +720,13 @@ require_once 'database.php';
         if(savedCoupon) {
             appliedCoupon = JSON.parse(savedCoupon);
         }
+        
+        // Enter gomb kezelése a kupon mezőben
+        document.addEventListener('keypress', function(e) {
+            if (e.target.id === 'coupon-code' && e.key === 'Enter') {
+                applyCoupon();
+            }
+        });
     });
 
     // Kosár megjelenítése
@@ -745,7 +798,20 @@ require_once 'database.php';
         }
         
         const shipping = subtotal >= 30000 ? 0 : 1990;
-        const total = subtotal + shipping;
+        
+        // Kupon kedvezmény számítása
+        let discount = 0;
+        let discountText = '';
+        if (appliedCoupon) {
+            if (appliedCoupon.type === 'percent') {
+                discount = Math.round(subtotal * (appliedCoupon.value / 100));
+            } else {
+                discount = appliedCoupon.value;
+            }
+            discountText = ` (${appliedCoupon.code})`;
+        }
+        
+        const total = subtotal + shipping - discount;
         
         cartContent.innerHTML = `
             <div class="cart-items">
@@ -759,6 +825,13 @@ require_once 'database.php';
                     <span>${subtotal.toLocaleString()} Ft</span>
                 </div>
                 
+                ${appliedCoupon ? `
+                <div class="summary-row">
+                    <span>Kedvezmény${discountText}:</span>
+                    <span>-${discount.toLocaleString()} Ft</span>
+                </div>
+                ` : ''}
+                
                 <div class="summary-row">
                     <span>Szállítás:</span>
                     <span>${shipping === 0 ? 'Ingyenes' : shipping.toLocaleString() + ' Ft'}</span>
@@ -768,6 +841,22 @@ require_once 'database.php';
                     <span>Végösszeg:</span>
                     <span>${total.toLocaleString()} Ft</span>
                 </div>
+                
+                <!-- Kupon rész -->
+                ${appliedCoupon ? `
+                <div class="coupon-applied">
+                    <span class="coupon-text" style="text-align: left;">Kupon alkalmazva:</span>
+                    <span class="coupon-code">${appliedCoupon.code}</span>
+                    <span class="remove-coupon" onclick="removeCoupon()">Eltávolítás</span>
+                </div>
+                ` : `
+                <div class="coupon-section">
+                    <div class="coupon-input-group">
+                        <input type="text" id="coupon-code" class="coupon-input" placeholder="Kuponkód megadása" maxlength="20">
+                        <button class="apply-coupon" onclick="applyCoupon()">Alkalmazás</button>
+                    </div>
+                </div>
+                `}
                 
                 <button class="checkout-btn" onclick="proceedToCheckout()">
                     Tovább a pénztárhoz
@@ -892,14 +981,65 @@ require_once 'database.php';
         form.method = 'POST';
         form.action = 'checkout.php';
         
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'cart_data';
-        input.value = JSON.stringify(cart);
+        const cartInput = document.createElement('input');
+        cartInput.type = 'hidden';
+        cartInput.name = 'cart_data';
+        cartInput.value = JSON.stringify(cart);
+        form.appendChild(cartInput);
         
-        form.appendChild(input);
+        // Kupon adatok hozzáadása
+        const couponInput = document.createElement('input');
+        couponInput.type = 'hidden';
+        couponInput.name = 'coupon_data';
+        couponInput.value = appliedCoupon ? JSON.stringify(appliedCoupon) : 'null';
+        form.appendChild(couponInput);
+        
         document.body.appendChild(form);
         form.submit();
+    }
+
+    // Kupon alkalmazása
+    function applyCoupon() {
+        const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+        
+        if (!code) {
+            showNotification('Kérjük, add meg a kuponkódot!', 'error');
+            return;
+        }
+        
+        if (appliedCoupon && appliedCoupon.code === code) {
+            showNotification('Ez a kupon már alkalmazva van!', 'warning');
+            return;
+        }
+        
+        const coupon = coupons[code];
+        if (!coupon) {
+            showNotification('Érvénytelen kuponkód!', 'error');
+            return;
+        }
+        
+        // Részösszeg számítása
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        // Minimum rendelési összeg ellenőrzés
+        if (coupon.min_order && subtotal < coupon.min_order) {
+            showNotification(`Minimum ${coupon.min_order.toLocaleString()} Ft rendelési összeg szükséges!`, 'error');
+            return;
+        }
+        
+        appliedCoupon = { ...coupon, code: code };
+        localStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon));
+        displayCart();
+        showNotification('Kupon sikeresen alkalmazva!');
+        document.getElementById('coupon-code').value = '';
+    }
+
+    // Kupon eltávolítása
+    function removeCoupon() {
+        appliedCoupon = null;
+        localStorage.removeItem('appliedCoupon');
+        displayCart();
+        showNotification('Kupon eltávolítva');
     }
 
     // Értesítés
