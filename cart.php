@@ -666,7 +666,7 @@ require_once 'database.php';
     </main>
 
     <footer>
-        <p>&copy; 2024 Kickstar Sneaker - Minden jog fenntartva</p>
+        <p>&copy; 2026 Kickstar Sneaker - Minden jog fenntartva</p>
     </footer>
 
     <script>
