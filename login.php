@@ -3,7 +3,7 @@ session_start();
 require_once 'database.php';
 
 // Ha már be van jelentkezve, átirányítás a dashboardra
-if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     header('Location: dashboard.php');
     exit;
 }
@@ -12,41 +12,41 @@ $error = '';
 $success = '';
 
 // Jelszó hash létrehozása (első telepítéshez)
-if(isset($_GET['setup']) && $_GET['setup'] === 'create_password') {
+if (isset($_GET['setup']) && $_GET['setup'] === 'create_password') {
     $password = 'admin123';
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $success = "Jelszó hash: " . $hash;
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-    
+
     // Admin ellenőrzés
     $stmt = $pdo->prepare("SELECT * FROM admins WHERE username = ?");
     $stmt->execute([$username]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if($admin && password_verify($password, $admin['password'])) {
+
+    if ($admin && password_verify($password, $admin['password'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $admin['id'];
         $_SESSION['admin_username'] = $admin['username'];
         $_SESSION['admin_name'] = $admin['full_name'] ?? $admin['username'];
         $_SESSION['login_time'] = time();
-        
+
         // Utolsó belépés frissítése
         $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW(), last_ip = ? WHERE id = ?");
         $updateStmt->execute([$_SERVER['REMOTE_ADDR'], $admin['id']]);
-        
+
         // Naplózás
         $logStmt = $pdo->prepare("INSERT INTO admin_logs (admin_id, action, details, ip_address) VALUES (?, ?, ?, ?)");
         $logStmt->execute([$admin['id'], 'login', 'Sikeres bejelentkezés', $_SERVER['REMOTE_ADDR']]);
-        
+
         header('Location: dashboard.php');
         exit;
     } else {
         $error = 'Hibás felhasználónév vagy jelszó!';
-        
+
         // Sikertelen próbálkozás naplózása
         $logStmt = $pdo->prepare("INSERT INTO admin_logs (admin_id, action, details, ip_address) VALUES (NULL, 'failed_login', ?, ?)");
         $logStmt->execute(["Sikertelen bejelentkezés: $username", $_SERVER['REMOTE_ADDR']]);
@@ -56,6 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,7 +78,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         /* Header */
         header {
-            background: rgba(255, 255, 255, 0.1);
+            background-color: rgb(65, 61, 61);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             position: fixed;
@@ -100,7 +101,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #ff6b6b;
+            color: white;
         }
 
         nav ul {
@@ -110,7 +111,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         nav ul li a {
-            color: #2c3e50;
+            color: white;
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 1rem;
@@ -139,7 +140,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             display: block;
             width: 40px;
             height: 40px;
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgb(65, 61, 61);
             bottom: -160px;
             animation: square 25s infinite;
             transition-timing-function: linear;
@@ -225,6 +226,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 transform: translateY(0) rotate(0deg);
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(-1000px) rotate(720deg);
                 opacity: 0;
@@ -266,6 +268,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -274,7 +277,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         /* Header */
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgb(65, 61, 61) 0%, black 100%);
             padding: 40px 30px;
             text-align: center;
             color: white;
@@ -298,6 +301,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             0% {
                 transform: translateX(-100%) rotate(45deg);
             }
+
             100% {
                 transform: translateX(100%) rotate(45deg);
             }
@@ -310,9 +314,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         @keyframes bounce {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -348,9 +355,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .success-message {
@@ -411,7 +428,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-group input:focus + i {
+        .form-group input:focus+i {
             color: #667eea;
         }
 
@@ -476,7 +493,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         .login-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgb(65, 61, 61) 0%, black 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -537,7 +554,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Footer */
@@ -564,23 +583,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             .login-wrapper {
                 padding: 10px;
             }
-            
+
             .login-header {
                 padding: 30px 20px;
             }
-            
+
             .login-header .logo {
                 font-size: 3rem;
             }
-            
+
             .login-header h1 {
                 font-size: 1.5rem;
             }
-            
+
             .login-body {
                 padding: 30px 20px;
             }
-            
+
             .form-options {
                 flex-direction: column;
                 gap: 15px;
@@ -598,6 +617,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav>
@@ -605,7 +625,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             <ul>
                 <li><a href="index.php">Főoldal</a></li>
                 <li><a href="products.php">Termékek</a></li>
-                <li><a href="login.php">🛡️ Admin felület</a></li>
+                <li><a href="login.php">🖥️ Admin felület</a></li>
             </ul>
         </nav>
     </header>
@@ -636,14 +656,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <!-- Body -->
                 <div class="login-body">
-                    <?php if($error): ?>
+                    <?php if ($error): ?>
                         <div class="error-message">
                             <span>⚠️</span>
                             <span><?php echo $error; ?></span>
                         </div>
                     <?php endif; ?>
 
-                    <?php if($success): ?>
+                    <?php if ($success): ?>
                         <div class="success-message">
                             <span>✅</span>
                             <span><?php echo $success; ?></span>
@@ -670,7 +690,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         <div class="form-options">
                             <label class="remember-me">
-                                <input type="checkbox" name="remember"> 
+                                <input type="checkbox" name="remember">
                                 <span>Emlékezz rám</span>
                             </label>
                             <a href="#" class="forgot-password" onclick="alert('Kérjük, vegye fel a kapcsolatot a rendszergazdával!')">Elfelejtett jelszó?</a>
@@ -683,7 +703,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <!-- Footer -->
             <div class="login-footer">
-                <p>&copy; 2024 Kickstar Admin. Minden jog fenntartva. | <a href="index.php">Vissza a webshopba</a></p>
+                <p>&copy; 2026 Kickstar Admin. Minden jog fenntartva. | <a href="index.php">Vissza a webshopba</a></p>
             </div>
         </div>
     </main>
@@ -694,7 +714,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             const password = document.getElementById('password');
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
-            
+
             const toggle = document.querySelector('.password-toggle');
             toggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
         }
@@ -757,4 +777,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
     </script>
 </body>
+
 </html>
