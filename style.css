@@ -59,16 +59,18 @@ nav ul {
 
 nav ul li a {
   text-decoration: none;
-  color: var(--dark-color);
-  font-weight: 500;
-  transition: var(--transition);
-  position: relative;
   color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   padding-bottom: 5px;
 }
 
 nav ul li a:hover {
-  color: cyan;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 nav ul li a::after {
@@ -79,7 +81,7 @@ nav ul li a::after {
   width: 0;
   height: 2px;
   background-color: var(--primary-color);
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 nav ul li a:hover::after {
