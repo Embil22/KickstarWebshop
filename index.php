@@ -53,7 +53,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </section>
     </main>
-
+    <footer>
+        <p>&copy; 2026 Kickstar - Minden jog fenntartva</p>
+    </footer>
     <script src="script.js"></script>
 </body>
 
