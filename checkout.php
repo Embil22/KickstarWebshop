@@ -631,7 +631,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['place_order'])) {
                                 <i>🏪</i>
                                 <strong>Személyes átvétel</strong>
                                 <span>Ingyenes</span>
-                                <small>Budapest, Kossuth tér 1-3.</small>
+                                <small>Szentes, Apponyi tér 1.</small>
                             </label>
                         </div>
                     </div>
