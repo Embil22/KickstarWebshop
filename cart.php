@@ -5,6 +5,7 @@ require_once 'database.php';
 
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -178,7 +179,7 @@ require_once 'database.php';
             border-color: var(--primary-color);
             color: var(--primary-color);
             transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .size-option.selected {
@@ -245,7 +246,7 @@ require_once 'database.php';
             padding: 0.5rem;
             transition: all 0.3s ease;
         }
-        
+
         .remove-item:hover {
             transform: scale(1.1);
             color: #c0392b;
@@ -328,7 +329,7 @@ require_once 'database.php';
             padding: 1.2rem 1.5rem;
             border-radius: 8px;
             border: 1px solid #c3e6cb;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -353,13 +354,13 @@ require_once 'database.php';
         }
 
         .coupon-applied .coupon-code {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             color: #155724;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: bold;
             font-size: 0.9rem;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             margin: 0 auto;
         }
 
@@ -371,8 +372,8 @@ require_once 'database.php';
             padding: 0.4rem 0.8rem;
             border-radius: 4px;
             transition: all 0.3s ease;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid rgba(220,53,69,0.3);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(220, 53, 69, 0.3);
             text-decoration: none;
             display: inline-block;
         }
@@ -381,7 +382,7 @@ require_once 'database.php';
             background: #dc3545;
             color: white;
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(220,53,69,0.3);
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
         }
 
         /* Checkout gomb */
@@ -526,6 +527,7 @@ require_once 'database.php';
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -553,8 +555,13 @@ require_once 'database.php';
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Reszponzív */
@@ -592,25 +599,26 @@ require_once 'database.php';
                 flex-direction: column;
             }
         }
+
         @media (max-width: 768px) {
             .cart-container {
                 min-height: calc(100vh - 150px);
                 padding: 1rem;
             }
-            
+
             .empty-cart {
                 padding: 2rem 1.5rem;
                 max-width: 90%;
             }
-            
+
             .empty-cart h2 {
                 font-size: 1.5rem;
             }
-            
+
             .empty-cart p {
                 font-size: 0.9rem;
             }
-            
+
             .empty-cart .checkout-btn {
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
@@ -621,11 +629,11 @@ require_once 'database.php';
             .empty-cart {
                 padding: 1.5rem 1rem;
             }
-            
+
             .empty-cart i {
                 font-size: 3.5rem;
             }
-            
+
             .empty-cart h2 {
                 font-size: 1.2rem;
             }
@@ -642,6 +650,7 @@ require_once 'database.php';
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav>
@@ -670,71 +679,87 @@ require_once 'database.php';
     </footer>
 
     <script>
-    // Kosár betöltése localStorage-ból
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let appliedCoupon = null;
-    
-    // Kuponok
-    const coupons = {
-        'KICK10': { type: 'percent', value: 10, min_order: 10000 },
-        'KICK20': { type: 'percent', value: 20, min_order: 20000 },
-        'FREE1000': { type: 'fixed', value: 1000, min_order: 5000 }
-    };
+        // Kosár betöltése localStorage-ból
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let appliedCoupon = null;
 
-    // Termék képek hozzárendelése ID alapján (ha hiányzik a kép)
-    const productImages = {
-        1: 'nike-air-max-270.jpg',
-        2: 'adidas-ultraboost-22.jpg',
-        3: 'new-balance-574.jpg',
-        4: 'puma-cali.jpg',
-        5: 'converse-chuck-taylor.jpg',
-        6: 'vans-old-skool.jpg',
-        7: 'AJ1MDS.jpg',
-    };
-
-    // Oldal betöltésekor
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('=== KOSÁR TARTALMA ===');
-        console.log(JSON.parse(JSON.stringify(cart)));
-        
-        // HIBAJAVÍTÁS: Ha nincs kép a terméknél, hozzárendeljük az ID alapján
-        let modified = false;
-        cart = cart.map(item => {
-            if (!item.image && productImages[item.id]) {
-                console.log(`Kép hozzáadva a ${item.name} termékhez: ${productImages[item.id]}`);
-                item.image = productImages[item.id];
-                modified = true;
+        // Kuponok
+        const coupons = {
+            'KICK10': {
+                type: 'percent',
+                value: 10,
+                min_order: 10000
+            },
+            'KICK20': {
+                type: 'percent',
+                value: 20,
+                min_order: 20000
+            },
+            'FREE1000': {
+                type: 'fixed',
+                value: 1000,
+                min_order: 5000
             }
-            return item;
-        });
-        
-        if (modified) {
-            localStorage.setItem('cart', JSON.stringify(cart));
-            console.log('Javított kosár:', JSON.parse(JSON.stringify(cart)));
-        }
-        
-        displayCart();
-        updateCartCount();
-        
-        const savedCoupon = localStorage.getItem('appliedCoupon');
-        if(savedCoupon) {
-            appliedCoupon = JSON.parse(savedCoupon);
-        }
-        
-        // Enter gomb kezelése a kupon mezőben
-        document.addEventListener('keypress', function(e) {
-            if (e.target.id === 'coupon-code' && e.key === 'Enter') {
-                applyCoupon();
-            }
-        });
-    });
+        };
 
-    // Kosár megjelenítése
-    function displayCart() {
-        const cartContent = document.getElementById('cart-content');
-        
-        if (cart.length === 0) {
-            cartContent.innerHTML = `
+        // Termék képek hozzárendelése ID alapján (ha hiányzik a kép)
+        const productImages = {
+            1: 'nike-air-max-270.jpg',
+            2: 'adidas-ultraboost-22.jpg',
+            3: 'new-balance-574.jpg',
+            4: 'puma-cali.jpg',
+            5: 'converse-chuck-taylor.jpg',
+            6: 'vans-old-skool.jpg',
+            7: 'AJ1MDS.jpg',
+            8: 'AJ4-YT.jpg',
+            9: 'AJ4-RBC.jpg',
+            10: 'AF1.jpg',
+            11: 'AJ1-RHD.jpg',
+        };
+
+        // Oldal betöltésekor
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== KOSÁR TARTALMA ===');
+            console.log(JSON.parse(JSON.stringify(cart)));
+
+            // HIBAJAVÍTÁS: Ha nincs kép a terméknél, hozzárendeljük az ID alapján
+            let modified = false;
+            cart = cart.map(item => {
+                if (!item.image && productImages[item.id]) {
+                    console.log(`Kép hozzáadva a ${item.name} termékhez: ${productImages[item.id]}`);
+                    item.image = productImages[item.id];
+                    modified = true;
+                }
+                return item;
+            });
+
+            if (modified) {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                console.log('Javított kosár:', JSON.parse(JSON.stringify(cart)));
+            }
+
+            displayCart();
+            updateCartCount();
+
+            const savedCoupon = localStorage.getItem('appliedCoupon');
+            if (savedCoupon) {
+                appliedCoupon = JSON.parse(savedCoupon);
+            }
+
+            // Enter gomb kezelése a kupon mezőben
+            document.addEventListener('keypress', function(e) {
+                if (e.target.id === 'coupon-code' && e.key === 'Enter') {
+                    applyCoupon();
+                }
+            });
+        });
+
+        // Kosár megjelenítése
+        function displayCart() {
+            const cartContent = document.getElementById('cart-content');
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
                 <div class="empty-cart">
                     <i>🛒</i>
                     <h2>A kosár üres</h2>
@@ -742,24 +767,24 @@ require_once 'database.php';
                     <a href="products.php" class="checkout-btn" style="display: inline-block; width: auto; padding: 1rem 3rem;">Termékek böngészése</a>
                 </div>
             `;
-            return;
-        }
-        
-        let subtotal = 0;
-        let itemsHtml = '';
-        
-        for(let i = 0; i < cart.length; i++) {
-            const item = cart[i];
-            const itemTotal = item.price * item.quantity;
-            subtotal += itemTotal;
-            
-            // Kép elérési út
-            const imageFile = item.image || productImages[item.id] || 'default.jpg';
-            const imagePath = `uploads/${imageFile}`;
-            
-            console.log(`Termék ${i}: ${item.name}, Kép: ${imagePath}`);
-            
-            itemsHtml += `
+                return;
+            }
+
+            let subtotal = 0;
+            let itemsHtml = '';
+
+            for (let i = 0; i < cart.length; i++) {
+                const item = cart[i];
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                // Kép elérési út
+                const imageFile = item.image || productImages[item.id] || 'default.jpg';
+                const imagePath = `uploads/${imageFile}`;
+
+                console.log(`Termék ${i}: ${item.name}, Kép: ${imagePath}`);
+
+                itemsHtml += `
                 <div class="cart-item" data-index="${i}" data-product-id="${item.id}">
                     <div class="cart-item-image">
                         <img src="${imagePath}" 
@@ -795,25 +820,25 @@ require_once 'database.php';
                     <button class="remove-item" onclick="removeItem(${i})">🗑️</button>
                 </div>
             `;
-        }
-        
-        const shipping = subtotal >= 30000 ? 0 : 1990;
-        
-        // Kupon kedvezmény számítása
-        let discount = 0;
-        let discountText = '';
-        if (appliedCoupon) {
-            if (appliedCoupon.type === 'percent') {
-                discount = Math.round(subtotal * (appliedCoupon.value / 100));
-            } else {
-                discount = appliedCoupon.value;
             }
-            discountText = ` (${appliedCoupon.code})`;
-        }
-        
-        const total = subtotal + shipping - discount;
-        
-        cartContent.innerHTML = `
+
+            const shipping = subtotal >= 30000 ? 0 : 1990;
+
+            // Kupon kedvezmény számítása
+            let discount = 0;
+            let discountText = '';
+            if (appliedCoupon) {
+                if (appliedCoupon.type === 'percent') {
+                    discount = Math.round(subtotal * (appliedCoupon.value / 100));
+                } else {
+                    discount = appliedCoupon.value;
+                }
+                discountText = ` (${appliedCoupon.code})`;
+            }
+
+            const total = subtotal + shipping - discount;
+
+            cartContent.innerHTML = `
             <div class="cart-items">
                 ${itemsHtml}
             </div>
@@ -868,188 +893,192 @@ require_once 'database.php';
                 </div>
             </div>
         `;
-        
-        // Méretek betöltése minden termékhez
-        for(let i = 0; i < cart.length; i++) {
-            if (cart[i].id) {
-                loadAvailableSizes(i, cart[i].id, cart[i].size);
+
+            // Méretek betöltése minden termékhez
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].id) {
+                    loadAvailableSizes(i, cart[i].id, cart[i].size);
+                }
             }
         }
-    }
 
-    // Elérhető méretek betöltése
-    function loadAvailableSizes(index, productId, currentSize) {
-        fetch(`get-product-sizes.php?product_id=${productId}`)
-            .then(response => response.json())
-            .then(data => {
-                const selector = document.getElementById(`size-selector-${index}`);
-                if (!selector) return;
-                
-                if (data.sizes && data.sizes.length > 0) {
-                    let html = '';
-                    data.sizes.forEach(size => {
-                        const selectedClass = size.size === currentSize ? 'selected' : '';
-                        html += `
+        // Elérhető méretek betöltése
+        function loadAvailableSizes(index, productId, currentSize) {
+            fetch(`get-product-sizes.php?product_id=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const selector = document.getElementById(`size-selector-${index}`);
+                    if (!selector) return;
+
+                    if (data.sizes && data.sizes.length > 0) {
+                        let html = '';
+                        data.sizes.forEach(size => {
+                            const selectedClass = size.size === currentSize ? 'selected' : '';
+                            html += `
                             <button class="size-option ${selectedClass}" 
                                     onclick="changeSize(${index}, '${size.size}', ${size.id})">
                                 ${size.size}
                             </button>
                         `;
-                    });
-                    selector.innerHTML = html;
-                } else {
-                    selector.innerHTML = '<p style="color: #999;">Nincsenek elérhető méretek</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Hiba:', error);
-            });
-    }
-
-    // Méretválasztó megjelenítése
-    function showSizeSelector(index) {
-        const selector = document.getElementById(`size-selector-${index}`);
-        if (selector) {
-            selector.style.display = selector.style.display === 'none' ? 'flex' : 'none';
+                        });
+                        selector.innerHTML = html;
+                    } else {
+                        selector.innerHTML = '<p style="color: #999;">Nincsenek elérhető méretek</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Hiba:', error);
+                });
         }
-    }
 
-    // Méret módosítása
-    function changeSize(index, newSize, variantId) {
-        cart[index].size = newSize;
-        cart[index].variantId = variantId;
-        localStorage.setItem('cart', JSON.stringify(cart));
-        displayCart();
-        showNotification(`Méret módosítva: ${newSize}`);
-    }
-
-    // Mennyiség frissítése
-    function updateQuantity(index, change) {
-        const newQuantity = cart[index].quantity + change;
-        if (newQuantity >= 1 && newQuantity <= 10) {
-            cart[index].quantity = newQuantity;
-            localStorage.setItem('cart', JSON.stringify(cart));
-            displayCart();
-            updateCartCount();
-        }
-    }
-
-    // Termék eltávolítása
-    function removeItem(index) {
-        if (confirm('Biztosan eltávolítod?')) {
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            displayCart();
-            updateCartCount();
-            showNotification('Termék eltávolítva');
-        }
-    }
-
-    // Kosár ürítése
-    function clearCart() {
-        if (confirm('Biztosan üríteni szeretnéd a kosarat?')) {
-            cart = [];
-            localStorage.removeItem('cart');
-            displayCart();
-            updateCartCount();
-            showNotification('Kosár kiürítve');
-        }
-    }
-
-    // Kosár számláló frissítése
-    function updateCartCount() {
-        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById('cart-count').textContent = count;
-    }
-
-    // Tovább a pénztárhoz
-    function proceedToCheckout() {
-        if (cart.length === 0) {
-            showNotification('A kosár üres!', 'error');
-            return;
-        }
-        
-        // Ellenőrizzük a méreteket
-        for (let item of cart) {
-            if (!item.size) {
-                showNotification(`A(z) ${item.name} termékhez nincs méret kiválasztva!`, 'error');
-                return;
+        // Méretválasztó megjelenítése
+        function showSizeSelector(index) {
+            const selector = document.getElementById(`size-selector-${index}`);
+            if (selector) {
+                selector.style.display = selector.style.display === 'none' ? 'flex' : 'none';
             }
         }
-        
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'checkout.php';
-        
-        const cartInput = document.createElement('input');
-        cartInput.type = 'hidden';
-        cartInput.name = 'cart_data';
-        cartInput.value = JSON.stringify(cart);
-        form.appendChild(cartInput);
-        
-        // Kupon adatok hozzáadása
-        const couponInput = document.createElement('input');
-        couponInput.type = 'hidden';
-        couponInput.name = 'coupon_data';
-        couponInput.value = appliedCoupon ? JSON.stringify(appliedCoupon) : 'null';
-        form.appendChild(couponInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    }
 
-    // Kupon alkalmazása
-    function applyCoupon() {
-        const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-        
-        if (!code) {
-            showNotification('Kérjük, add meg a kuponkódot!', 'error');
-            return;
+        // Méret módosítása
+        function changeSize(index, newSize, variantId) {
+            cart[index].size = newSize;
+            cart[index].variantId = variantId;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+            showNotification(`Méret módosítva: ${newSize}`);
         }
-        
-        if (appliedCoupon && appliedCoupon.code === code) {
-            showNotification('Ez a kupon már alkalmazva van!', 'warning');
-            return;
-        }
-        
-        const coupon = coupons[code];
-        if (!coupon) {
-            showNotification('Érvénytelen kuponkód!', 'error');
-            return;
-        }
-        
-        // Részösszeg számítása
-        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // Minimum rendelési összeg ellenőrzés
-        if (coupon.min_order && subtotal < coupon.min_order) {
-            showNotification(`Minimum ${coupon.min_order.toLocaleString()} Ft rendelési összeg szükséges!`, 'error');
-            return;
-        }
-        
-        appliedCoupon = { ...coupon, code: code };
-        localStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon));
-        displayCart();
-        showNotification('Kupon sikeresen alkalmazva!');
-        document.getElementById('coupon-code').value = '';
-    }
 
-    // Kupon eltávolítása
-    function removeCoupon() {
-        appliedCoupon = null;
-        localStorage.removeItem('appliedCoupon');
-        displayCart();
-        showNotification('Kupon eltávolítva');
-    }
+        // Mennyiség frissítése
+        function updateQuantity(index, change) {
+            const newQuantity = cart[index].quantity + change;
+            if (newQuantity >= 1 && newQuantity <= 10) {
+                cart[index].quantity = newQuantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                displayCart();
+                updateCartCount();
+            }
+        }
 
-    // Értesítés
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    }
-</script>
+        // Termék eltávolítása
+        function removeItem(index) {
+            if (confirm('Biztosan eltávolítod?')) {
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                displayCart();
+                updateCartCount();
+                showNotification('Termék eltávolítva');
+            }
+        }
+
+        // Kosár ürítése
+        function clearCart() {
+            if (confirm('Biztosan üríteni szeretnéd a kosarat?')) {
+                cart = [];
+                localStorage.removeItem('cart');
+                displayCart();
+                updateCartCount();
+                showNotification('Kosár kiürítve');
+            }
+        }
+
+        // Kosár számláló frissítése
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+        }
+
+        // Tovább a pénztárhoz
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                showNotification('A kosár üres!', 'error');
+                return;
+            }
+
+            // Ellenőrizzük a méreteket
+            for (let item of cart) {
+                if (!item.size) {
+                    showNotification(`A(z) ${item.name} termékhez nincs méret kiválasztva!`, 'error');
+                    return;
+                }
+            }
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'checkout.php';
+
+            const cartInput = document.createElement('input');
+            cartInput.type = 'hidden';
+            cartInput.name = 'cart_data';
+            cartInput.value = JSON.stringify(cart);
+            form.appendChild(cartInput);
+
+            // Kupon adatok hozzáadása
+            const couponInput = document.createElement('input');
+            couponInput.type = 'hidden';
+            couponInput.name = 'coupon_data';
+            couponInput.value = appliedCoupon ? JSON.stringify(appliedCoupon) : 'null';
+            form.appendChild(couponInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Kupon alkalmazása
+        function applyCoupon() {
+            const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+
+            if (!code) {
+                showNotification('Kérjük, add meg a kuponkódot!', 'error');
+                return;
+            }
+
+            if (appliedCoupon && appliedCoupon.code === code) {
+                showNotification('Ez a kupon már alkalmazva van!', 'warning');
+                return;
+            }
+
+            const coupon = coupons[code];
+            if (!coupon) {
+                showNotification('Érvénytelen kuponkód!', 'error');
+                return;
+            }
+
+            // Részösszeg számítása
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // Minimum rendelési összeg ellenőrzés
+            if (coupon.min_order && subtotal < coupon.min_order) {
+                showNotification(`Minimum ${coupon.min_order.toLocaleString()} Ft rendelési összeg szükséges!`, 'error');
+                return;
+            }
+
+            appliedCoupon = {
+                ...coupon,
+                code: code
+            };
+            localStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon));
+            displayCart();
+            showNotification('Kupon sikeresen alkalmazva!');
+            document.getElementById('coupon-code').value = '';
+        }
+
+        // Kupon eltávolítása
+        function removeCoupon() {
+            appliedCoupon = null;
+            localStorage.removeItem('appliedCoupon');
+            displayCart();
+            showNotification('Kupon eltávolítva');
+        }
+
+        // Értesítés
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+    </script>
 </body>
+
 </html>
