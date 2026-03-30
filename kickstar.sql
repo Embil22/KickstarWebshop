@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Már 16. 00:05
--- Kiszolgáló verziója: 10.4.32-MariaDB
--- PHP verzió: 8.2.12
+-- Létrehozás ideje: 2026. Már 30. 11:25
+-- Kiszolgáló verziója: 10.4.28-MariaDB
+-- PHP verzió: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -84,7 +84,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `username`, `full_name`, `email`, `password`, `role`, `status`, `last_login`, `last_ip`, `failed_attempts`, `locked_until`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'Rendszergazda', 'admin@kickstar.hu', '$2y$10$1Cfh1eqGc5JEXrV0e0obweCf96Az3f0XYg2LFL6d6hHmS5ZHXymAy', 'superadmin', 'active', '2026-03-15 23:42:11', '::1', 0, NULL, '2026-03-15 22:17:25', '2026-03-15 22:42:11');
+(1, 'admin', 'Rendszergazda', 'admin@kickstar.hu', '$2y$10$1Cfh1eqGc5JEXrV0e0obweCf96Az3f0XYg2LFL6d6hHmS5ZHXymAy', 'superadmin', 'active', '2026-03-30 11:23:05', '::1', 0, NULL, '2026-03-15 22:17:25', '2026-03-30 09:23:05');
 
 -- --------------------------------------------------------
 
@@ -110,7 +110,13 @@ INSERT INTO `admin_logs` (`id`, `admin_id`, `action`, `details`, `ip_address`, `
 (1, NULL, 'failed_login', 'Sikertelen bejelentkezés: admin', '::1', NULL, '2026-03-15 22:17:46'),
 (2, 1, 'login', 'Sikeres bejelentkezés', '::1', NULL, '2026-03-15 22:17:49'),
 (3, 1, 'login', 'Sikeres bejelentkezés', '::1', NULL, '2026-03-15 22:19:11'),
-(4, 1, 'login', 'Sikeres bejelentkezés', '::1', NULL, '2026-03-15 22:42:11');
+(4, 1, 'login', 'Sikeres bejelentkezés', '::1', NULL, '2026-03-15 22:42:11'),
+(5, 1, 'login', 'Sikeres bejelentkezés', '::1', NULL, '2026-03-30 09:23:05'),
+(6, NULL, 'order_status_change', 'Rendelés #4 státusz: pending -> shipped', NULL, NULL, '2026-03-30 09:23:28'),
+(7, 1, 'delete_order', 'Rendelés #4 törölve (1 tétellel)', '::1', NULL, '2026-03-30 09:23:34'),
+(8, 1, 'delete_order', 'Rendelés #1 törölve (1 tétellel)', '::1', NULL, '2026-03-30 09:23:37'),
+(9, 1, 'delete_order', 'Rendelés #2 törölve (1 tétellel)', '::1', NULL, '2026-03-30 09:23:37'),
+(10, 1, 'delete_order', 'Rendelés #3 törölve (2 tétellel)', '::1', NULL, '2026-03-30 09:23:38');
 
 -- --------------------------------------------------------
 
@@ -299,15 +305,6 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
--- A tábla adatainak kiíratása `orders`
---
-
-INSERT INTO `orders` (`id`, `user_id`, `order_number`, `customer_name`, `customer_email`, `customer_phone`, `shipping_address`, `billing_address`, `shipping_method`, `payment_method`, `subtotal`, `shipping_cost`, `discount`, `tax`, `total_amount`, `coupon_code`, `notes`, `status`, `payment_status`, `shipping_status`, `ip_address`, `user_agent`, `created_at`, `updated_at`) VALUES
-(1, 1, 'ORD-2024-0001', 'Kiss János', 'kiss.janos@email.com', '+36301234567', '1011 Budapest, Fő utca 10', NULL, NULL, NULL, 42990.00, 1990.00, 0.00, 0.00, 44980.00, NULL, NULL, 'delivered', 'paid', 'pending', NULL, NULL, '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
-(2, 2, 'ORD-2024-0002', 'Nagy Éva', 'nagy.eva@email.com', '+36307654321', '6720 Szeged, Kossuth Lajos sugárút 25', NULL, NULL, NULL, 45990.00, 1990.00, 0.00, 0.00, 47980.00, NULL, NULL, 'shipped', 'paid', 'pending', NULL, NULL, '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
-(3, NULL, 'ORD-2024-0003', 'Teszt Elek', 'teszt.elek@email.com', '+36201234567', '7621 Pécs, Király utca 15', NULL, NULL, NULL, 61980.00, 1990.00, 0.00, 0.00, 63970.00, NULL, NULL, 'processing', 'pending', 'pending', NULL, NULL, '2026-03-15 22:17:25', '2026-03-15 22:17:25');
-
---
 -- Eseményindítók `orders`
 --
 DELIMITER $$
@@ -340,16 +337,6 @@ CREATE TABLE `order_items` (
   `total` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
-
---
--- A tábla adatainak kiíratása `order_items`
---
-
-INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `variant_id`, `product_name`, `product_sku`, `size`, `quantity`, `price`, `total`, `created_at`) VALUES
-(1, 1, 1, 1, 'Nike Air Max 270 - Méret: 39', 'NK-AM270-39', '39', 1, 42990.00, 42990.00, '2026-03-15 22:17:25'),
-(2, 2, 2, 10, 'Adidas Ultraboost 22 - Méret: 42', 'AD-UB22-42', '42', 1, 45990.00, 45990.00, '2026-03-15 22:17:25'),
-(3, 3, 3, 18, 'New Balance 574 - Méret: 39', 'NB-574-39', '39', 1, 38990.00, 38990.00, '2026-03-15 22:17:25'),
-(4, 3, 5, 32, 'Converse Chuck Taylor - Méret: 30', 'CN-CT-30', '30', 1, 18990.00, 18990.00, '2026-03-15 22:17:25');
 
 --
 -- Eseményindítók `order_items`
@@ -439,7 +426,11 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `description`, `sho
 (4, 2, 'Puma Cali', 'puma-cali', 'A Puma Cali a 80-as évek hangulatát idézi modern formában. Tökéletes választás mindennapokra.', 'Retro női sneaker', 32990.00, NULL, NULL, 'PM-CALI', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'puma-cali.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
 (5, 3, 'Converse Chuck Taylor', 'converse-chuck-taylor', 'Az ikonikus Converse Chuck Taylor most gyerek méretben is. Időtlen design, kényelmes viselet.', 'Gyerek vászoncipő', 18990.00, NULL, NULL, 'CN-CT', NULL, 0, 'in_stock', NULL, 1, 0, 0, 'converse-chuck-taylor.jpg', NULL, NULL, NULL, NULL, NULL, 0, 1, 'active', '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
 (6, 1, 'Vans Old Skool', 'vans-old-skool', 'A Vans Old Skool a klasszikus gördeszkás cipő. Tartós, stílusos, ikonikus.', 'Gördeszkás cipő', 27990.00, NULL, NULL, 'VN-OS', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'vans-old-skool.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
-(7, NULL, 'Air Jordan 1 Mid Diamond Shorts', 'Air-Jordan-1-Mid-Diamond-Shorts', 'Az Air Jordan 1 Mid Diamond Shorts a streetwear és a kosárlabda örökség tökéletes ötvözete. Fényűző bőr felsőrész, merész színblokkok és a feltűnő Diamond márkajelzés – ikonikus sziluett, ütős részletekkel.', 'Férficipő', 59990.00, NULL, NULL, 'AJ-1MID-DS', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'AJ1MDS.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-15 22:27:26', '2026-03-15 23:00:55');
+(7, NULL, 'Air Jordan 1 Mid Diamond Shorts', 'Air-Jordan-1-Mid-Diamond-Shorts', 'Az Air Jordan 1 Mid Diamond Shorts a streetwear és a kosárlabda örökség tökéletes ötvözete. Fényűző bőr felsőrész, merész színblokkok és a feltűnő Diamond márkajelzés – ikonikus sziluett, ütős részletekkel.', 'Férficipő', 59990.00, NULL, NULL, 'AJ-1MID-DS', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'AJ1MDS.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-15 22:27:26', '2026-03-15 23:00:55'),
+(8, NULL, 'Air Jordan 4 Yellow Thunder', 'air-jordan-4-yellow-thunder\r\n', 'Az Air Jordan 4 Yellow Thunder a feltűnő kontrasztok mestere. Fekete bőr felsőrész élénk sárga részletekkel, ikonikus sarokfülekkel és látható légpárnával – merész, letisztult, felejthetetlen.', 'Yellow Thunder', 119990.00, NULL, NULL, 'AJ4-YT', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'AJ4-YT.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-30 08:25:13', '2026-03-30 08:25:13'),
+(9, NULL, 'Air Jordan 4 Retro Black Cat', 'air-jordan-4-retro-black-cat', 'Az Air Jordan 4 Retro Black Cat a minimalista elegancia megtestesítője. Teljes egészében fekete bőr felsőrész, matt részletekkel és ikonikus sarokfülekkel – visszafogott, letisztult, mégis ikonikus.', 'Air Jordan 4 Retro Black Cat (2025)', 114990.00, NULL, NULL, 'AJ4-RBC', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'AJ4-RBC.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-30 08:36:31', '2026-03-30 08:48:34'),
+(10, NULL, 'Nike Air Force 1', 'nike-air-force-1', 'A Nike Air Force 1 a streetwear megkerülhetetlen klasszikusa. Tiszta vonalak, prémium bőr és a legendás látható Air párnázás – időtlen, letisztult, ikonikus.', 'Nike Air Force 1', 39990.00, NULL, NULL, 'AF1', NULL, 0, 'in_stock', NULL, 0, 0, 0, 'AF1.jpg', NULL, NULL, NULL, NULL, NULL, 0, 0, 'active', '2026-03-30 09:03:33', '2026-03-30 09:04:33'),
+(11, NULL, 'Air Jordan 1 Retro High Dior', 'air-jordan-1-retro-high-dior', 'Ritkasága miatt csak 1 méret. Az Air Jordan 1 Retro High Dior a luxus és az utcai divat tökéletes találkozása. Prémium, szürke-fehér bőr felsőrész, kifinomult Dior mintázattal és ikonikus swoosh-logóval – elegáns, letisztult, páratlan.', 'Air Jordan 1 Retro High Dior', 4999990.00, NULL, 0.00, 'AJ1-RHD', NULL, -1, 'in_stock', NULL, 0, 0, 0, 'AJ1-RHD.jpg\r\n', NULL, NULL, NULL, NULL, NULL, 0, 1, 'active', '2026-03-30 09:11:44', '2026-03-30 09:22:58');
 
 -- --------------------------------------------------------
 
@@ -563,7 +554,26 @@ INSERT INTO `product_variants` (`id`, `product_id`, `size`, `sku`, `price`, `ima
 (57, 7, '42', 'AJ-1MID-DS-42', 59990.00, 'AJ1MDS.jpg', '2026-03-15 22:59:19', '2026-03-15 22:59:19'),
 (58, 7, '43', 'AJ-1MID-DS-43', 59990.00, 'AJ1MDS.jpg', '2026-03-15 22:59:30', '2026-03-15 22:59:30'),
 (59, 7, '44', 'AJ-1MID-DS-44', 59990.00, 'AJ1MDS.jpg', '2026-03-15 22:59:40', '2026-03-15 22:59:40'),
-(60, 7, '45', 'AJ-1MID-DS-45', 59990.00, 'AJ1MDS.jpg', '2026-03-15 22:59:57', '2026-03-15 22:59:57');
+(60, 7, '45', 'AJ-1MID-DS-45', 59990.00, 'AJ1MDS.jpg', '2026-03-15 22:59:57', '2026-03-15 22:59:57'),
+(61, 8, '40', 'AJ4-YT-40', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:27:58', '2026-03-30 08:27:58'),
+(62, 8, '41', 'AJ4-YT-41', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:30:40', '2026-03-30 08:30:40'),
+(63, 8, '42', 'AJ4-YT-42', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:30:59', '2026-03-30 08:30:59'),
+(64, 8, '43', 'AJ4-YT-43', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:31:15', '2026-03-30 08:31:15'),
+(65, 8, '44', 'AJ4-YT-44', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:31:29', '2026-03-30 08:31:29'),
+(66, 8, '45', 'AJ4-YT-45', 119990.00, 'AJ4-YT.jpg', '2026-03-30 08:31:57', '2026-03-30 08:31:57'),
+(67, 9, '40', 'AJ4-RBC-40', 114990.00, 'AJ4-RBC-jpg', '2026-03-30 08:52:04', '2026-03-30 08:52:04'),
+(68, 9, '41', 'AJ4-RBC-41', 114990.00, 'AJ4-RBC.jpg\r\n', '2026-03-30 08:52:38', '2026-03-30 09:05:02'),
+(69, 9, '42', 'AJ4-RBC-42', 114990.00, 'AJ4-RBC.jpg', '2026-03-30 08:52:52', '2026-03-30 08:52:52'),
+(70, 9, '43', 'AJ4-RBC-43', 114990.00, 'AJ4-RBC.jpg', '2026-03-30 08:53:07', '2026-03-30 08:53:07'),
+(72, 9, '44', 'AJ4-RBC-44', 114990.00, 'AJ4-RBC.jpg', '2026-03-30 08:53:44', '2026-03-30 08:53:44'),
+(73, 9, '45', 'AJ4-RBC-45', 114990.00, 'AJ4-RBC.jpg', '2026-03-30 08:54:00', '2026-03-30 08:54:00'),
+(74, 10, '40', 'AF1-40', 39990.00, 'AF1.jpg', '2026-03-30 09:05:26', '2026-03-30 09:06:53'),
+(75, 10, '41', 'AF1-41', 39990.00, 'AF1.jpg', '2026-03-30 09:05:50', '2026-03-30 09:06:57'),
+(76, 10, '42', 'AF1-42', 39990.00, 'AF1.jpg', '2026-03-30 09:06:06', '2026-03-30 09:06:06'),
+(77, 10, '43', 'AF1-43', 39990.00, 'AF1.jpg', '2026-03-30 09:07:17', '2026-03-30 09:07:17'),
+(78, 10, '44', 'AF1-44', 39900.00, 'AF1.jpg', '2026-03-30 09:07:25', '2026-03-30 09:07:42'),
+(79, 10, '45', 'AF1-45', 39990.00, 'AF1.jpg', '2026-03-30 09:07:57', '2026-03-30 09:07:57'),
+(80, 11, '42', 'AJ1-RHD-42', 4999990.00, 'AJ1-RHD.jpg', '2026-03-30 09:19:42', '2026-03-30 09:19:42');
 
 -- --------------------------------------------------------
 
@@ -593,8 +603,8 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`id`, `product_id`, `user_id`, `order_id`, `rating`, `title`, `comment`, `pros`, `cons`, `is_verified`, `status`, `helpful_count`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 5, 'Tökéletes cipő!', 'Nagyon kényelmes, pontosan olyan, mint a képeken. Gyors szállítás.', NULL, NULL, 0, 'approved', 0, '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
-(2, 2, 2, 2, 4, 'Jó cipő', 'Kényelmes, de kicsit szűkös a méretezés.', NULL, NULL, 0, 'approved', 0, '2026-03-15 22:17:25', '2026-03-15 22:17:25');
+(1, 1, 1, NULL, 5, 'Tökéletes cipő!', 'Nagyon kényelmes, pontosan olyan, mint a képeken. Gyors szállítás.', NULL, NULL, 0, 'approved', 0, '2026-03-15 22:17:25', '2026-03-15 22:17:25'),
+(2, 2, 2, NULL, 4, 'Jó cipő', 'Kényelmes, de kicsit szűkös a méretezés.', NULL, NULL, 0, 'approved', 0, '2026-03-15 22:17:25', '2026-03-15 22:17:25');
 
 -- --------------------------------------------------------
 
@@ -1030,7 +1040,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT a táblához `admin_logs`
 --
 ALTER TABLE `admin_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT a táblához `admin_settings`
@@ -1072,13 +1082,13 @@ ALTER TABLE `newsletter`
 -- AUTO_INCREMENT a táblához `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT a táblához `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT a táblához `pages`
@@ -1090,7 +1100,7 @@ ALTER TABLE `pages`
 -- AUTO_INCREMENT a táblához `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT a táblához `product_images`
@@ -1102,7 +1112,7 @@ ALTER TABLE `product_images`
 -- AUTO_INCREMENT a táblához `product_variants`
 --
 ALTER TABLE `product_variants`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT a táblához `reviews`
