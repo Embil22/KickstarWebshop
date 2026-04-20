@@ -9,3 +9,4 @@ Felhasználói útmutató:
 -4.lépés: Mikor belépett az oldalra a „Főoldalt” fogja látni
 -5.lépés:válassza  ki a magának tetsző cipőt 
 -6.lépés: lépjen be a kosárba, rendelése elött adja meg lábméretét ,és adja le rendelését.
+Prezentáció: https://prezi.com/view/MkviISrrCdq1j3cZ3m4H/?referral_token=-_g9qElnB3FN&authuser=0
